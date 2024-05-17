@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model customers {
+  id      Int       @id @default(autoincrement())
+  name    String
+  address String
+  phone   String
+  tickets tickets[]
+}
+
+model technicians {
+  id      Int       @id @default(autoincrement())
+  name    String
+  phone   String
+  tickets tickets[]
+}
+
+model tickets {
+  id                     Int          @id @default(autoincrement())
+  title                  String
+  description            String?
+  customer_id            Int
+  hardware_type          String
+  warehouse_id           Int
+  assigned_technician_id Int?
+  date                   String
+  created_at             DateTime?    @default(now())
+  isResolved             Boolean      @default(false)
+  technicians            technicians? @relation(fields: [assigned_technician_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  warehouses             warehouses   @relation(fields: [warehouse_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  customers              customers    @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model warehouses {
+  id                     Int       @id @default(autoincrement())
+  name                   String
+  pinpad_stock           Int?
+  weight_stock           Int?
+  scanner_stock          Int?
+  biometric_reader_stock Int?
+  tickets                tickets[]
+}
+
+model warehouses_new {
+  id                     Int    @id @default(autoincrement())
+  name                   String
+  pinpad_stock           Int?
+  weight_stock           Int?
+  scanner_stock          Int?
+  biometric_reader_stock Int?
+}
