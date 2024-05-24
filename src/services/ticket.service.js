@@ -1,4 +1,5 @@
 import { DbService } from "../db/dbClient.js";
+import functionsHelper from "../utils/functions.js";
 
 class TicketService {
   constructor() {
@@ -58,6 +59,7 @@ class TicketService {
   }
 
   updateTicket(ticketId, data) {
+    console.log(data);
     try {
       return this.db.tickets.update({
         where: {
@@ -87,6 +89,9 @@ class TicketService {
   }
 
   async createTicket(ticketData) {
+    if (!functionsHelper.validateTicketData(ticketData)) {
+      return false;
+    }
     try {
       const [mostAvialiableTech, availableWerehouse] = await Promise.all([
         this.getMostAvailableTech(),

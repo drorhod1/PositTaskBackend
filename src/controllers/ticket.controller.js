@@ -24,7 +24,11 @@ class TicketController {
     try {
       const ticketData = req.body;
       const createdTicket = await ticketService.createTicket(ticketData);
-      res.json(createdTicket);
+      if (!createdTicket) {
+        res.status(400).json({ message: "One or more field are missing" });
+      } else {
+        res.json(createdTicket);
+      }
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
